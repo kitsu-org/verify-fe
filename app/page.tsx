@@ -1,3 +1,4 @@
+import { ThemeToggle } from "@/components/theme-trigger";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -5,7 +6,10 @@ import { Verified } from "lucide-react";
 
 export default function Home() {
     return (
-        <div className="flex min-h-screen w-full flex-col">
+        <div className="flex min-h-screen w-full flex-col relative">
+            <div className="absolute top-4 right-4 z-10 hidden md:block">
+                <ThemeToggle />
+            </div>
             <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 max-w-2xl mx-auto w-full">
                 <Alert>
                     <Verified className="h-4 w-4" />
@@ -18,7 +22,7 @@ export default function Home() {
                     <CardHeader>
                         <CardTitle>Account Lockdown</CardTitle>
                     </CardHeader>
-                    <CardContent className="prose prose-gray [&_li>strong]:block [&_li>strong]:mb-2">
+                    <CardContent className="prose prose-gray dark:prose-invert [&_li>strong]:block [&_li>strong]:mb-2">
                         <p>
                             Unfortunately, you have been flagged as a minor. Due
                             to this, your account has been locked until you can

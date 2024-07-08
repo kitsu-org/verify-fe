@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import type { ReactNode } from "react";
 
@@ -35,7 +36,14 @@ export default function RootLayout({
                             backgroundSize: "cover",
                         }}
                     >
-                        {children}
+                        <ThemeProvider
+                            attribute="class"
+                            defaultTheme="system"
+                            enableSystem={true}
+                            disableTransitionOnChange={true}
+                        >
+                            {children}
+                        </ThemeProvider>
                     </div>
                 </TooltipProvider>
             </body>
