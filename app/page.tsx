@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 
 import { Verified } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
     return (
@@ -102,7 +103,9 @@ export default function Home() {
                         </p>
                     </CardContent>
                     <CardFooter className="sticky bottom-0 bg-card pt-4 border-t shadow rounded-b-lg flex flex-col-reverse gap-4">
-                        <Button className="w-full">Verify your age</Button>
+                        <Link href="/verify" className="w-full">
+                            <Button className="w-full">Verify your age</Button>
+                        </Link>
                     </CardFooter>
                 </Card>
             </main>
