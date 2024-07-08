@@ -2,7 +2,7 @@
     "name": "kitsu-verify",
     "private": true,
     "type": "module",
-    "license": "UNLICENSED",
+    "license": "AGPL-3.0-only",
     "author": {
         "email": "kio@kitsunes.gay",
         "name": "Kio",
