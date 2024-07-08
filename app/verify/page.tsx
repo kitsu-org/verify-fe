@@ -16,16 +16,73 @@ import { useState } from "react";
 
 export default function Verify() {
     const stripe = useStripe();
-    const { onMessageType } = useServerConnection();
-    const [loading] = useState(false);
+    const { socket, onMessageType } = useServerConnection();
+    const [step, setStep] = useState<
+        "preVerify" | "stripeLoading" | "verifying" | "done"
+    >("verifying");
 
     onMessageType(MessageTypes.StripeCode, async (code) => {
         const result = await stripe?.verifyIdentity(code);
 
         if (result?.error) {
-            throw result.error;
+            socket?.send(
+                JSON.stringify({
+                    type: "stripeerror",
+                    data: result.error,
+                }),
+            );
+        } else {
+            socket?.send(
+                JSON.stringify({
+                    type: "stripedone",
+                }),
+            );
         }
     });
+
+    const startVerification = () => {
+        setStep("stripeLoading");
+        socket?.send(
+            JSON.stringify({
+                type: "verify",
+            }),
+        );
+    };
+
+    const renderState = (stepName: typeof step) => {
+        switch (stepName) {
+            case "preVerify": {
+                return (
+                    <div className="flex flex-col gap-4 prose prose-gray dark:prose-invert">
+                        <p>
+                            Click the button to begin Stripe age verification.
+                        </p>
+                    </div>
+                );
+            }
+            case "stripeLoading": {
+                return (
+                    <div className="flex grow min-h-[50vh] items-center justify-center">
+                        <Loader2 className="animate-spin size-12" />
+                    </div>
+                );
+            }
+            case "verifying": {
+                return (
+                    <div className="prose prose-gray dark:prose-invert">
+                        <p>
+                            We are now validating your age: this might take a
+                            few minutes.
+                        </p>
+                        <p>
+                            When we are done, this page will automatically
+                            update.
+                        </p>
+                    </div>
+                );
+            }
+        }
+    };
 
     return (
         <div className="flex min-h-screen w-full flex-col relative">
@@ -37,23 +94,18 @@ export default function Verify() {
                     <CardHeader>
                         <CardTitle>Account Verification</CardTitle>
                     </CardHeader>
-                    <CardContent className="min-h-[50vh]">
-                        {loading ? (
-                            <div className="flex grow items-center justify-center">
-                                <Loader2 className="animate-spin size-12" />
-                            </div>
-                        ) : (
-                            <div className="flex flex-col gap-4 prose prose-gray dark:prose-invert">
-                                <p>
-                                    Stripe will now open. Please follow the
-                                    instructions to verify your age.
-                                </p>
-                            </div>
-                        )}
-                    </CardContent>
+                    <CardContent className="">{renderState(step)}</CardContent>
                     <CardFooter className="sticky bottom-0 bg-card pt-4 border-t shadow rounded-b-lg flex flex-col-reverse gap-4">
-                        <Button disabled={true} className="w-full">
-                            Verify your age
+                        <Button
+                            disabled={[
+                                "stripeLoading",
+                                "verifying",
+                                "done",
+                            ].includes(step)}
+                            onClick={startVerification}
+                            className="w-full"
+                        >
+                            Begin verification
                         </Button>
                     </CardFooter>
                 </Card>
