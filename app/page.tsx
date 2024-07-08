@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 
 import { Verified } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -78,7 +78,13 @@ export default function Home() {
 						)}
 					</CardHeader>
 					<CardContent className="prose prose-gray dark:prose-invert [&_li>strong]:block [&_li>strong]:mb-2">
-						{userInfo?.banType === "conditional" ? (
+						{ userInfo?.banType === "none" ? 
+							<text>
+								You have no need to verify your identity.<br />
+								Thank you for being a part of Kitsu!
+							</text>
+						: userInfo?.banType === "permanent" ? redirect('/verify/reject') 
+						: userInfo?.banType === "conditional" ? (
 							<text>
 								<p>
 									Unfortunately, you have been flagged as a minor. Due to this,
