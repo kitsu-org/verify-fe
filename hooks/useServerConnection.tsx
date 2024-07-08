@@ -19,14 +19,6 @@ interface StripeCode extends MessageStructure {
 type WebSocketMessage = StripeCode;
 
 export const useServerConnection = () => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-    if (!apiUrl) {
-        throw new TypeError(
-            "The NEXT_PUBLIC_API_URL environment variable is not set.",
-        );
-    }
-
     const [socket, setSocket] = useState<WebSocket | null>(null);
 
     const onMessageType = (
@@ -47,11 +39,19 @@ export const useServerConnection = () => {
     };
 
     useEffect(() => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+        if (!apiUrl) {
+            throw new TypeError(
+                "The NEXT_PUBLIC_API_URL environment variable is not set.",
+            );
+        }
+
         const url = new URL(apiUrl);
 
         url.searchParams.set("identity", "9v4i8kslu2");
         setSocket(new WebSocket(url));
-    }, [apiUrl]);
+    }, []);
 
     return { socket, onMessageType };
 };
