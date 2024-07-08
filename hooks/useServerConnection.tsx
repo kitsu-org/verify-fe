@@ -4,12 +4,32 @@ import { useEffect, useState } from "react";
 
 export enum MessageTypes {
     StripeCode = "stripecode",
+    Identify = "identify",
+    Identification = "identification",
 }
 
 type MessageStructure = {
     type: string;
     data: unknown;
 };
+
+export interface IdentificationMessage extends MessageStructure {
+    type: MessageTypes.Identification;
+    data: {
+        // Conditional: The user has the change for verification
+        // Permanent: The user has lost the ability to appeal
+        // None: No record on file / already done.
+        username: string;
+        banType: "conditional" | "permanent" | "none";
+    }
+}
+
+export interface IdentifyMessage extends MessageStructure {
+    type: MessageTypes.Identify;
+    data: {
+        userId: string;
+    }
+}
 
 interface StripeCode extends MessageStructure {
     type: MessageTypes.StripeCode;
