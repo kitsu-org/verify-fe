@@ -6,12 +6,18 @@ export enum MessageTypes {
     StripeCode = "stripecode",
     Identify = "identify",
     Identification = "identification",
+    FailedIdentification = "failedIdentification",
 }
 
 type MessageStructure = {
     type: string;
     data: unknown;
 };
+
+export interface FailedIdentification extends MessageStructure {
+    type: MessageTypes.FailedIdentification;
+    data: null;
+}
 
 export interface IdentificationMessage extends MessageStructure {
     type: MessageTypes.Identification;
