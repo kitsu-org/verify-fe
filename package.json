@@ -1,91 +1,91 @@
 {
-	"name": "kitsu-verify",
-	"private": true,
-	"type": "module",
-	"license": "AGPL-3.0-only",
-	"author": {
-		"email": "kio@kitsunes.gay",
-		"name": "Kio",
-		"url": "https://kitsu.life"
-	},
-	"maintainers": [
-		{
-			"email": "contact@cpluspatch.com",
-			"name": "CPlusPatch",
-			"url": "https://cpluspatch.com"
-		},
-		{
-			"email": "kio@kitsunes.gay",
-			"name": "Kio",
-			"url": "https://kitsu.life"
-		}
-	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/kio/kitsu-verify.git"
-	},
-	"scripts": {
-		"dev": "next dev",
-		"build": "next build",
-		"start": "next start",
-		"lint": "bunx @biomejs/biome check ."
-	},
-	"dependencies": {
-		"@hackmd/markdown-it-task-lists": "^2.1.4",
-		"@hookform/resolvers": "^3.9.0",
-		"@radix-ui/react-aspect-ratio": "^1.1.0",
-		"@radix-ui/react-avatar": "^1.1.0",
-		"@radix-ui/react-dialog": "^1.1.1",
-		"@radix-ui/react-dropdown-menu": "^2.1.1",
-		"@radix-ui/react-hover-card": "^1.1.1",
-		"@radix-ui/react-label": "^2.1.0",
-		"@radix-ui/react-popover": "^1.1.1",
-		"@radix-ui/react-select": "^2.1.1",
-		"@radix-ui/react-slot": "^1.1.0",
-		"@radix-ui/react-switch": "^1.1.0",
-		"@radix-ui/react-tabs": "^1.1.0",
-		"@radix-ui/react-tooltip": "^1.1.2",
-		"@shikijs/markdown-it": "^1.10.3",
-		"@stripe/react-stripe-js": "^2.7.3",
-		"@stripe/stripe-js": "^4.1.0",
-		"@uidotdev/usehooks": "^2.4.1",
-		"class-variance-authority": "^0.7.0",
-		"clsx": "^2.1.1",
-		"lucide-react": "^0.401.0",
-		"markdown-it": "^14.1.0",
-		"markdown-it-anchor": "^9.0.1",
-		"markdown-it-container": "^4.0.0",
-		"markdown-it-toc-done-right": "^4.2.0",
-		"mitt": "^3.0.1",
-		"nanoid": "^5.0.7",
-		"next": "^15.0.0-rc.0",
-		"next-themes": "^0.3.0",
-		"react": "^19.0.0-rc-f38c22b244-20240704",
-		"react-arborist": "^3.4.0",
-		"react-dom": "^19.0.0-rc-f38c22b244-20240704",
-		"react-hook-form": "^7.52.1",
-		"react-parallax-tilt": "^1.7.230",
-		"react-timeago-i18n": "^2.2.1",
-		"shiki": "^1.10.3",
-		"tailwind-merge": "^2.4.0",
-		"tailwindcss-animate": "^1.0.7",
-		"use-resize-observer": "^9.1.0",
-		"vaul": "^0.9.1",
-		"zod": "^3.23.8"
-	},
-	"devDependencies": {
-		"typescript": "^5.5.3",
-		"@types/node": "^20.14.10",
-		"@types/react": "^18.3.3",
-		"@types/react-dom": "^18.3.0",
-		"postcss": "^8.4.39",
-		"tailwindcss": "^3.4.4",
-		"@biomejs/biome": "^1.8.3",
-		"@iconify-icon/react": "^2.1.0",
-		"@tailwindcss/forms": "^0.5.7",
-		"@tailwindcss/typography": "^0.5.13",
-		"@types/markdown-it-container": "^2.0.10",
-		"@types/bun": "^1.1.6"
-	},
-	"trustedDependencies": ["@biomejs/biome", "sharp"]
+    "name": "kitsu-verify",
+    "private": true,
+    "type": "module",
+    "license": "AGPL-3.0-only",
+    "author": {
+        "email": "kio@kitsunes.gay",
+        "name": "Kio",
+        "url": "https://kitsu.life"
+    },
+    "maintainers": [
+        {
+            "email": "contact@cpluspatch.com",
+            "name": "CPlusPatch",
+            "url": "https://cpluspatch.com"
+        },
+        {
+            "email": "kio@kitsunes.gay",
+            "name": "Kio",
+            "url": "https://kitsu.life"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/kio/kitsu-verify.git"
+    },
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "bunx @biomejs/biome check ."
+    },
+    "dependencies": {
+        "@hackmd/markdown-it-task-lists": "^2.1.4",
+        "@hookform/resolvers": "^3.9.0",
+        "@radix-ui/react-aspect-ratio": "^1.1.0",
+        "@radix-ui/react-avatar": "^1.1.0",
+        "@radix-ui/react-dialog": "^1.1.1",
+        "@radix-ui/react-dropdown-menu": "^2.1.1",
+        "@radix-ui/react-hover-card": "^1.1.1",
+        "@radix-ui/react-label": "^2.1.0",
+        "@radix-ui/react-popover": "^1.1.1",
+        "@radix-ui/react-select": "^2.1.1",
+        "@radix-ui/react-slot": "^1.1.0",
+        "@radix-ui/react-switch": "^1.1.0",
+        "@radix-ui/react-tabs": "^1.1.0",
+        "@radix-ui/react-tooltip": "^1.1.2",
+        "@shikijs/markdown-it": "^1.10.3",
+        "@stripe/react-stripe-js": "^2.7.3",
+        "@stripe/stripe-js": "^4.1.0",
+        "@uidotdev/usehooks": "^2.4.1",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.1",
+        "lucide-react": "^0.401.0",
+        "markdown-it": "^14.1.0",
+        "markdown-it-anchor": "^9.0.1",
+        "markdown-it-container": "^4.0.0",
+        "markdown-it-toc-done-right": "^4.2.0",
+        "mitt": "^3.0.1",
+        "nanoid": "^5.0.7",
+        "next": "^15.0.0-rc.0",
+        "next-themes": "^0.3.0",
+        "react": "^19.0.0-rc-f38c22b244-20240704",
+        "react-arborist": "^3.4.0",
+        "react-dom": "^19.0.0-rc-f38c22b244-20240704",
+        "react-hook-form": "^7.52.1",
+        "react-parallax-tilt": "^1.7.230",
+        "react-timeago-i18n": "^2.2.1",
+        "shiki": "^1.10.3",
+        "tailwind-merge": "^2.4.0",
+        "tailwindcss-animate": "^1.0.7",
+        "use-resize-observer": "^9.1.0",
+        "vaul": "^0.9.1",
+        "zod": "^3.23.8"
+    },
+    "devDependencies": {
+        "typescript": "^5.5.3",
+        "@types/node": "^20.14.10",
+        "@types/react": "^18.3.3",
+        "@types/react-dom": "^18.3.0",
+        "postcss": "^8.4.39",
+        "tailwindcss": "^3.4.4",
+        "@biomejs/biome": "^1.8.3",
+        "@iconify-icon/react": "^2.1.0",
+        "@tailwindcss/forms": "^0.5.7",
+        "@tailwindcss/typography": "^0.5.13",
+        "@types/markdown-it-container": "^2.0.10",
+        "@types/bun": "^1.1.6"
+    },
+    "trustedDependencies": ["@biomejs/biome", "sharp"]
 }

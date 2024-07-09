@@ -21,14 +21,14 @@ export interface IdentificationMessage extends MessageStructure {
         // None: No record on file / already done.
         username: string;
         banType: "conditional" | "permanent" | "none";
-    }
+    };
 }
 
 export interface IdentifyMessage extends MessageStructure {
     type: MessageTypes.Identify;
     data: {
         userId: string;
-    }
+    };
 }
 
 interface StripeCode extends MessageStructure {
