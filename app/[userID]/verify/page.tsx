@@ -12,45 +12,107 @@ import {
 import { MessageTypes, useServerConnection } from "@/hooks/useServerConnection";
 import { useStripe } from "@/hooks/useStripe";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
-export default function Verify() {
+export default function Verify({ params }: { params: { userID: string } }) {
     const stripe = useStripe();
+    const router = useRouter();
     const { socket, onMessageType } = useServerConnection();
+    let acceptedInfo = false;
+    const isInVerifySession = useRef(false);
     const [step, setStep] = useState<
-        "preVerify" | "stripeLoading" | "verifying" | "done"
-    >("verifying");
+        "eligibility" | "preVerify" | "stripeLoading" | "verifying" | "done"
+    >("eligibility");
 
-    onMessageType(MessageTypes.StripeCode, async (code) => {
-        const result = await stripe?.verifyIdentity(code);
+    useEffect(() => {
+        if (stripe) {
+            onMessageType(MessageTypes.FailedIdentification, () => {
+                return redirect(`/${params.userID}`);
+            });
+            onMessageType(MessageTypes.Identification, (info) => {
+                if (acceptedInfo) {
+                    return;
+                }
+                acceptedInfo = true;
+                if (info.banType === "conditional") {
+                    if (stripe !== null) {
+                        setStep("preVerify");
+                    }
+                }
+                if (info.banType === "permanent") {
+                    router.push(`/${params.userID}/verify/reject`);
+                }
+                if (info.banType === "none") {
+                    router.push(`/${params.userID}`);
+                }
+            });
 
-        if (result?.error) {
-            socket?.send(
-                JSON.stringify({
-                    type: "stripeerror",
-                    data: result.error,
-                }),
-            );
-        } else {
-            socket?.send(
-                JSON.stringify({
-                    type: "stripedone",
-                }),
-            );
+            onMessageType(MessageTypes.StripeSession, async (code) => {
+                console.log(
+                    `code received - ${code} - ${isInVerifySession.current}`,
+                );
+                if (isInVerifySession.current) {
+                    return;
+                }
+                isInVerifySession.current = true;
+                console.log("verification in progress!!");
+                console.log(stripe);
+                const result = await stripe?.verifyIdentity(code);
+                if (result?.error) {
+                    socket?.send(
+                        JSON.stringify({
+                            type: "stripeerror",
+                            data: result.error,
+                        }),
+                    );
+                } else {
+                    socket?.send(
+                        JSON.stringify({
+                            type: "stripedone",
+                        }),
+                    );
+                }
+            });
         }
-    });
+    }, [stripe, params.userID, acceptedInfo, router, socket, onMessageType]);
 
     const startVerification = () => {
         setStep("stripeLoading");
         socket?.send(
             JSON.stringify({
                 type: "verify",
+                data: {
+                    identity: params.userID,
+                },
             }),
         );
     };
+    socket?.addEventListener(
+        "open",
+        () => {
+            socket?.send(
+                JSON.stringify({
+                    type: "identify",
+                    data: {
+                        userId: params.userID,
+                    },
+                }),
+            );
+        },
+        { once: true },
+    );
 
     const renderState = (stepName: typeof step) => {
         switch (stepName) {
+            case "eligibility": {
+                return (
+                    <div className="flex flex-col gap-4 prose prose-gray dark:prose-invert">
+                        <p>One moment. We're gettting set up.</p>
+                    </div>
+                );
+            }
             case "preVerify": {
                 return (
                     <div className="flex flex-col gap-4 prose prose-gray dark:prose-invert">
@@ -98,6 +160,7 @@ export default function Verify() {
                     <CardFooter className="sticky bottom-0 bg-card pt-4 border-t shadow rounded-b-lg flex flex-col-reverse gap-4">
                         <Button
                             disabled={[
+                                "eligibility",
                                 "stripeLoading",
                                 "verifying",
                                 "done",

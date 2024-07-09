@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 
 export enum MessageTypes {
-    StripeCode = "stripecode",
+    StripeSession = "stripeSession",
     Identify = "identify",
     Identification = "identification",
     FailedIdentification = "failedIdentification",
+    StripeCode = "stripeCode",
 }
 
 type MessageStructure = {
@@ -42,7 +43,17 @@ interface StripeCode extends MessageStructure {
     data: string;
 }
 
-type WebSocketMessage = StripeCode;
+interface StripeSession extends MessageStructure {
+    type: MessageTypes.StripeSession;
+    data: string;
+}
+
+type WebSocketMessage =
+    | StripeCode
+    | IdentifyMessage
+    | IdentificationMessage
+    | FailedIdentification
+    | StripeSession;
 
 export const useServerConnection = () => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
