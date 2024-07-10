@@ -22,8 +22,18 @@ export default function Verify({ params }: { params: { userID: string } }) {
     const { socket, onMessageType } = useServerConnection();
     let acceptedInfo = false;
     const isInVerifySession = useRef(false);
+    const [verifySteps, setVerifySteps] = useState<{
+        unbanned: boolean;
+        reacted: boolean;
+    }>({ unbanned: false, reacted: false });
     const [step, setStep] = useState<
-        "eligibility" | "preVerify" | "stripeLoading" | "verifying" | "done"
+        | "eligibility"
+        | "preVerify"
+        | "stripeLoading"
+        | "verifying"
+        | "stripeCancel"
+        | "consentDeclined"
+        | "done"
     >("eligibility");
 
     useEffect(() => {
@@ -36,31 +46,70 @@ export default function Verify({ params }: { params: { userID: string } }) {
                     return;
                 }
                 acceptedInfo = true;
-                if (info.banType === "conditional") {
+                if (info?.banType === "conditional") {
                     if (stripe !== null) {
                         setStep("preVerify");
                     }
                 }
-                if (info.banType === "permanent") {
+                if (info?.banType === "permanent") {
                     router.push(`/${params.userID}/verify/reject`);
                 }
-                if (info.banType === "none") {
+                if (info?.banType === "none") {
                     router.push(`/${params.userID}`);
                 }
             });
 
+            onMessageType(MessageTypes.VerificationFailed, (data) => {
+                if (data.reason === "underage") {
+                    router.push(`/${params.userID}/verify/reject`);
+                }
+            });
+            onMessageType(MessageTypes.VerificationComplete, () => {
+                // Let's make the acceptance route obsolete - save on bandwith we already used.
+                //                router.push(`/${params.userID}/verify/accept`);
+                isInVerifySession.current = true;
+                setStep("done");
+            });
+            onMessageType(MessageTypes.VerificationCompleteStep, (step) => {
+                //FIXME: I can make the browser make stripe appear 12 times, but when i want it to rerender? Nah.
+                if (step === "redact") {
+                    setVerifySteps({
+                        unbanned: verifySteps.unbanned,
+                        reacted: true,
+                    });
+                }
+                if (step === "unban") {
+                    setVerifySteps({
+                        unbanned: true,
+                        reacted: verifySteps.reacted,
+                    });
+                }
+            });
             onMessageType(MessageTypes.StripeSession, async (code) => {
-                console.log(
-                    `code received - ${code} - ${isInVerifySession.current}`,
-                );
                 if (isInVerifySession.current) {
                     return;
                 }
                 isInVerifySession.current = true;
-                console.log("verification in progress!!");
-                console.log(stripe);
                 const result = await stripe?.verifyIdentity(code);
                 if (result?.error) {
+                    if (
+                        // So the error passed to this function is completely undefined if it's a userError ConsentDeclined.
+                        // This is strange.
+                        typeof result.error.code === "undefined" &&
+                        typeof result.error.type === "undefined"
+                    ) {
+                        isInVerifySession.current = false;
+                        setStep("consentDeclined");
+                    } else if (result.error.code === "session_cancelled") {
+                        // SessionCanceled is called when the user clicked out of the window, or presses the X. Sometimes, stuff happens.
+                        isInVerifySession.current = false;
+                        setStep("preVerify");
+                    } else {
+                        // Handle any other error.
+                        isInVerifySession.current = false;
+                        setStep("stripeCancel");
+                    }
+
                     socket?.send(
                         JSON.stringify({
                             type: "stripeerror",
@@ -106,6 +155,30 @@ export default function Verify({ params }: { params: { userID: string } }) {
 
     const renderState = (stepName: typeof step) => {
         switch (stepName) {
+            case "done": {
+                return (
+                    <div className="flex flex-col gap-4 prose prose-gray dark:prose-invert">
+                        <p>Everything checks out. Thanks!</p>
+                        {verifySteps.unbanned ? (
+                            <text>You have been reinstated!</text>
+                        ) : (
+                            <text>
+                                We are currently reinstating your account.
+                            </text>
+                        )}
+                        {verifySteps.reacted ? (
+                            <text>
+                                Your information with stripe has been redacted.
+                            </text>
+                        ) : (
+                            <text>
+                                We are currently redacting your information with
+                                stripe.
+                            </text>
+                        )}
+                    </div>
+                );
+            }
             case "eligibility": {
                 return (
                     <div className="flex flex-col gap-4 prose prose-gray dark:prose-invert">
@@ -126,6 +199,42 @@ export default function Verify({ params }: { params: { userID: string } }) {
                 return (
                     <div className="flex grow min-h-[50vh] items-center justify-center">
                         <Loader2 className="animate-spin size-12" />
+                    </div>
+                );
+            }
+            case "consentDeclined": {
+                return (
+                    <div className="flex flex-col gap-4 prose prose-gray dark:prose-invert">
+                        <p>
+                            Looks like you chose to decline verification.
+                            <br />
+                            That's okay. We won't judge - and you won't be
+                            penalized.
+                            <h3>Your options</h3>
+                            <ul>
+                                <li>
+                                    You are free to restart verification, if you
+                                    change your mind.
+                                </li>
+                                <li>
+                                    If you would like manual processing if your
+                                    identity, you can ask for a manual review.
+                                    <br />
+                                    <b>You should note:</b> it will take much
+                                    longer for a manual review.
+                                </li>
+                            </ul>
+                        </p>
+                    </div>
+                );
+            }
+            case "stripeCancel": {
+                return (
+                    <div className="flex flex-col gap-4 prose prose-gray dark:prose-invert">
+                        <p>
+                            Sorry. There seems to have been an issue. Could you
+                            try again?
+                        </p>
                     </div>
                 );
             }

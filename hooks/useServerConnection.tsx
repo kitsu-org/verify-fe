@@ -7,13 +7,31 @@ export enum MessageTypes {
     Identify = "identify",
     Identification = "identification",
     FailedIdentification = "failedIdentification",
+    VerificationFailed = "verificationFailed",
+    VerificationComplete = "verificationComplete",
     StripeCode = "stripeCode",
+    VerificationCompleteStep = "verificationCompleteStep",
 }
 
 type MessageStructure = {
     type: string;
     data: unknown;
 };
+
+export interface VerificationCompleteMessage extends MessageStructure {
+    type: MessageTypes.VerificationComplete;
+    data: { verificationId: string };
+}
+
+export interface VerificationCompleteStep extends MessageStructure {
+    type: MessageTypes.VerificationCompleteStep;
+    data: "redact" | "unban";
+}
+
+export interface VerificationFailedMessage extends MessageStructure {
+    type: MessageTypes.VerificationFailed;
+    data: { reason: string };
+}
 
 export interface FailedIdentification extends MessageStructure {
     type: MessageTypes.FailedIdentification;
