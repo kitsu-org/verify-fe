@@ -25,7 +25,7 @@ import { useEffect, useState } from "react";
 export default function Home({ params }: { params: { userID: string } }) {
     const userId = params.userID;
     const [userInfo, setUserInfo] = useState<
-        IdentificationMessage["data"] | "lookupFailed" | null
+        IdentificationMessage["data"] | null
     >(null);
     let acceptedInfo = false;
     const { socket, onMessageType } = useServerConnection();
@@ -50,7 +50,7 @@ export default function Home({ params }: { params: { userID: string } }) {
     onMessageType(MessageTypes.FailedIdentification, () => {
         if (!acceptedInfo) {
             acceptedInfo = true;
-            setUserInfo("lookupFailed");
+            setUserInfo({ username: "lookup.failed", banType: "none" });
         }
     });
     onMessageType(MessageTypes.Identification, (info) => {
@@ -83,7 +83,7 @@ export default function Home({ params }: { params: { userID: string } }) {
                 </Alert>
                 <Card className="relative">
                     <CardHeader>
-                        {userInfo === "lookupFailed" ? (
+                        {userInfo?.username === "lookup.failed" ? (
                             <CardTitle>Well, this is awkward.</CardTitle>
                         ) : userInfo?.username ? (
                             <CardTitle>Hi, @{userInfo.username}.</CardTitle>
@@ -97,7 +97,7 @@ export default function Home({ params }: { params: { userID: string } }) {
                         )}
                     </CardHeader>
                     <CardContent className="prose prose-gray dark:prose-invert [&_li>strong]:block [&_li>strong]:mb-2">
-                        {userInfo === "lookupFailed" ? (
+                        {userInfo?.username === "lookup.failed" ? (
                             <text>
                                 We're unable to validate your identity. Could
                                 you try again?
