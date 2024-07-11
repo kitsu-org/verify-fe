@@ -19,7 +19,7 @@ import { useEffect, useRef, useState } from "react";
 export default function Verify({ params }: { params: { userID: string } }) {
     const stripe = useStripe();
     const router = useRouter();
-    const { socket, onMessageType } = useServerConnection();
+    const { socket, onMessageType } = useServerConnection(params.userID);
     let acceptedInfo = false;
     const isInVerifySession = useRef(false);
     const [verifySteps, setVerifySteps] = useState<{

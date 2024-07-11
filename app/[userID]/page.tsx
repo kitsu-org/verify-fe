@@ -28,7 +28,7 @@ export default function Home({ params }: { params: { userID: string } }) {
         IdentificationMessage["data"] | null
     >(null);
     let acceptedInfo = false;
-    const { socket, onMessageType } = useServerConnection();
+    const { socket, onMessageType } = useServerConnection(params.userID);
 
     useEffect(() => {
         const identifyUser = () => {

@@ -76,7 +76,7 @@ type WebSocketMessage =
     | VerificationFailedMessage
     | VerificationCompleteStep;
 
-export const useServerConnection = () => {
+export const useServerConnection = (identity: string) => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
 
     const onMessageType = <T extends MessageTypes>(
@@ -108,9 +108,9 @@ export const useServerConnection = () => {
 
         const url = new URL(apiUrl);
 
-        url.searchParams.set("identity", "9v4i8kslu2");
+        url.searchParams.set("identity", identity);
         setSocket(new WebSocket(url));
-    }, []);
+    }, [identity]);
 
     return { socket, onMessageType };
 };
