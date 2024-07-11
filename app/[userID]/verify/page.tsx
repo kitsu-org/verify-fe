@@ -37,18 +37,13 @@ export default function Verify({ params }: { params: { userID: string } }) {
     >("eligibility");
 
     onMessageType(MessageTypes.VerificationCompleteStep, (step) => {
-        //FIXME: I can make the browser make stripe appear 12 times, but when i want it to rerender? Nah.
-        console.log(step);
-        console.log(verifySteps);
         if (step === "redact") {
-            console.log("redacted!!");
             setVerifySteps({
                 unbanned: verifySteps.unbanned,
                 reacted: true,
             });
         }
         if (step === "unban") {
-            console.log("unbanned!!");
             setVerifySteps({
                 unbanned: true,
                 reacted: verifySteps.reacted,
