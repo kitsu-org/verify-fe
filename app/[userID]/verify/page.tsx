@@ -36,6 +36,26 @@ export default function Verify({ params }: { params: { userID: string } }) {
         | "done"
     >("eligibility");
 
+    onMessageType(MessageTypes.VerificationCompleteStep, (step) => {
+        //FIXME: I can make the browser make stripe appear 12 times, but when i want it to rerender? Nah.
+        console.log(step);
+        console.log(verifySteps);
+        if (step === "redact") {
+            console.log("redacted!!");
+            setVerifySteps({
+                unbanned: verifySteps.unbanned,
+                reacted: true,
+            });
+        }
+        if (step === "unban") {
+            console.log("unbanned!!");
+            setVerifySteps({
+                unbanned: true,
+                reacted: verifySteps.reacted,
+            });
+        }
+    });
+
     useEffect(() => {
         if (stripe) {
             onMessageType(MessageTypes.FailedIdentification, () => {
@@ -70,21 +90,7 @@ export default function Verify({ params }: { params: { userID: string } }) {
                 isInVerifySession.current = true;
                 setStep("done");
             });
-            onMessageType(MessageTypes.VerificationCompleteStep, (step) => {
-                //FIXME: I can make the browser make stripe appear 12 times, but when i want it to rerender? Nah.
-                if (step === "redact") {
-                    setVerifySteps({
-                        unbanned: verifySteps.unbanned,
-                        reacted: true,
-                    });
-                }
-                if (step === "unban") {
-                    setVerifySteps({
-                        unbanned: true,
-                        reacted: verifySteps.reacted,
-                    });
-                }
-            });
+
             onMessageType(MessageTypes.StripeSession, async (code) => {
                 if (isInVerifySession.current) {
                     return;
@@ -175,6 +181,13 @@ export default function Verify({ params }: { params: { userID: string } }) {
                                 We are currently redacting your information with
                                 stripe.
                             </text>
+                        )}
+                        {verifySteps.unbanned && verifySteps.reacted ? (
+                            <text>
+                                You may now close this tab. Welcome back!
+                            </text>
+                        ) : (
+                            <text>Just give us one more minute...</text>
                         )}
                     </div>
                 );
