@@ -139,9 +139,9 @@ export default function Verify({ params }: { params: { userID: string } }) {
             }),
         );
     };
-    socket?.addEventListener(
-        "open",
-        () => {
+
+    useEffect(() => {
+        const identifyUser = () => {
             socket?.send(
                 JSON.stringify({
                     type: "identify",
@@ -150,9 +150,12 @@ export default function Verify({ params }: { params: { userID: string } }) {
                     },
                 }),
             );
-        },
-        { once: true },
-    );
+        };
+
+        socket?.addEventListener("open", identifyUser);
+
+        return () => socket?.removeEventListener("open", identifyUser);
+    }, [socket, params]);
 
     const renderState = (stepName: typeof step) => {
         switch (stepName) {

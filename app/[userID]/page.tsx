@@ -2,7 +2,11 @@
 import { ThemeToggle } from "@/components/theme-trigger";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { MessageTypes, useServerConnection } from "@/hooks/useServerConnection";
+import {
+    MessageTypes,
+    useServerConnection,
+    type IdentificationMessage,
+} from "@/hooks/useServerConnection";
 import { Info } from "lucide-react";
 
 import {
@@ -16,17 +20,37 @@ import {
 import { Verified } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home({ params }: { params: { userID: string } }) {
     const userId = params.userID;
-    const [userInfo, setUserInfo] = useState();
+    const [userInfo, setUserInfo] = useState<
+        IdentificationMessage["data"] | "lookupFailed" | null
+    >(null);
     let acceptedInfo = false;
     const { socket, onMessageType } = useServerConnection();
+
+    useEffect(() => {
+        const identifyUser = () => {
+            socket?.send(
+                JSON.stringify({
+                    type: "identify",
+                    data: {
+                        userId: params.userID,
+                    },
+                }),
+            );
+        };
+
+        socket?.addEventListener("open", identifyUser);
+
+        return () => socket?.removeEventListener("open", identifyUser);
+    }, [socket, params]);
+
     onMessageType(MessageTypes.FailedIdentification, () => {
         if (!acceptedInfo) {
             acceptedInfo = true;
-            setUserInfo(false);
+            setUserInfo("lookupFailed");
         }
     });
     onMessageType(MessageTypes.Identification, (info) => {
@@ -35,22 +59,6 @@ export default function Home({ params }: { params: { userID: string } }) {
             setUserInfo(info);
         }
     });
-    socket?.addEventListener(
-        "open",
-        () => {
-            if (userId) {
-                socket?.send(
-                    JSON.stringify({
-                        type: "identify",
-                        data: {
-                            userId,
-                        },
-                    }),
-                );
-            }
-        },
-        { once: true },
-    );
 
     return (
         <div className="flex min-h-screen w-full flex-col relative">
@@ -75,7 +83,7 @@ export default function Home({ params }: { params: { userID: string } }) {
                 </Alert>
                 <Card className="relative">
                     <CardHeader>
-                        {userInfo === false ? (
+                        {userInfo === "lookupFailed" ? (
                             <CardTitle>Well, this is awkward.</CardTitle>
                         ) : userInfo?.username ? (
                             <CardTitle>Hi, @{userInfo.username}.</CardTitle>
@@ -89,7 +97,7 @@ export default function Home({ params }: { params: { userID: string } }) {
                         )}
                     </CardHeader>
                     <CardContent className="prose prose-gray dark:prose-invert [&_li>strong]:block [&_li>strong]:mb-2">
-                        {userInfo === false ? (
+                        {userInfo === "lookupFailed" ? (
                             <text>
                                 We're unable to validate your identity. Could
                                 you try again?
