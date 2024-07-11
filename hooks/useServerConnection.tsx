@@ -14,7 +14,7 @@ export enum MessageTypes {
 }
 
 type MessageStructure = {
-    type: string;
+    type: MessageTypes;
     data: unknown;
 };
 
@@ -71,24 +71,28 @@ type WebSocketMessage =
     | IdentifyMessage
     | IdentificationMessage
     | FailedIdentification
-    | StripeSession;
+    | StripeSession
+    | VerificationCompleteMessage
+    | VerificationFailedMessage
+    | VerificationCompleteStep;
 
 export const useServerConnection = () => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
 
-    const onMessageType = (
-        type: MessageTypes,
-        callback: (data: WebSocketMessage["data"]) => void,
+    const onMessageType = <T extends MessageTypes>(
+        type: T,
+        callback: (data: (WebSocketMessage & { type: T })["data"]) => void,
     ) => {
         if (!socket) {
             return;
         }
 
         socket.addEventListener("message", (event) => {
-            const message = JSON.parse(event.data);
+            const message = JSON.parse(event.data) as WebSocketMessage;
 
-            if (message.type === type) {
-                callback(message.data);
+            if ((message.type as T) === type) {
+                // I have no idea why it needs the `as never` cast.
+                callback(message.data as never);
             }
         });
     };
