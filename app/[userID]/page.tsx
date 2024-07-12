@@ -119,7 +119,7 @@ export default function Home({ params }: { params: { userID: string } }) {
                                 Thank you for being a part of Kitsu!
                             </text>
                         ) : userInfo?.banType === "permanent" ? (
-                            redirect("/verify/reject")
+                            redirect(`/${params.userID}/verify/reject`)
                         ) : userInfo?.banType === "conditional" ? (
                             <text>
                                 <p>
