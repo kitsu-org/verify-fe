@@ -37,4 +37,4 @@ EXPOSE 3000
 
 ENV PORT=3000
 
-CMD ["HOSTNAME=0.0.0.0", "bun", "run", "server.js"]
+CMD ["bun", "run", "server.js"]
