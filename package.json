@@ -51,7 +51,7 @@
         "@uidotdev/usehooks": "^2.4.1",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
-        "lucide-react": "^0.401.0",
+        "lucide-react": "^0.408.0",
         "markdown-it": "^14.1.0",
         "markdown-it-anchor": "^9.0.1",
         "markdown-it-container": "^4.0.0",
@@ -61,11 +61,11 @@
         "next": "^15.0.0-rc.0",
         "next-runtime-env": "^3.2.2",
         "next-themes": "^0.3.0",
-        "react": "^19.0.0-rc-f38c22b244-20240704",
+        "react": "^19.0.0-rc-fb9a90fa48-20240614",
         "react-arborist": "^3.4.0",
-        "react-dom": "^19.0.0-rc-f38c22b244-20240704",
+        "react-dom": "^19.0.0-rc-fb9a90fa48-20240614",
         "react-hook-form": "^7.52.1",
-        "react-parallax-tilt": "^1.7.230",
+        "react-parallax-tilt": "^1.7.232",
         "react-timeago-i18n": "^2.2.1",
         "shiki": "^1.10.3",
         "tailwind-merge": "^2.4.0",
@@ -75,8 +75,8 @@
         "zod": "^3.23.8"
     },
     "overrides": {
-        "react": "^19.0.0-rc-f38c22b244-20240704",
-        "react-dom": "^19.0.0-rc-f38c22b244-20240704",
+        "react": "^19.0.0-rc-fb9a90fa48-20240614",
+        "react-dom": "^19.0.0-rc-fb9a90fa48-20240614",
         "next": "^15.0.0-rc.0"
     },
     "devDependencies": {
