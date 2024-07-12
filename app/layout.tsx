@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { PublicEnvScript } from "next-runtime-env";
 import type { ReactNode } from "react";
 
 const inter = Inter({
@@ -24,6 +25,7 @@ export default function RootLayout({
         <html lang="en">
             <head>
                 <link rel="icon" href="/favicon.png" type="image/png" />
+                <PublicEnvScript />
             </head>
             <body className={`${inter.className}`}>
                 <TooltipProvider>

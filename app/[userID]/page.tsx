@@ -3,9 +3,9 @@ import { ThemeToggle } from "@/components/theme-trigger";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
+    type IdentificationMessage,
     MessageTypes,
     useServerConnection,
-    type IdentificationMessage,
 } from "@/hooks/useServerConnection";
 import { Info } from "lucide-react";
 

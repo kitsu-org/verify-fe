@@ -1,5 +1,6 @@
 "use client";
 
+import { env } from "next-runtime-env";
 import { useEffect, useState } from "react";
 
 export enum MessageTypes {
@@ -98,7 +99,7 @@ export const useServerConnection = (identity: string) => {
     };
 
     useEffect(() => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const apiUrl = env("NEXT_PUBLIC_API_URL");
 
         if (!apiUrl) {
             throw new TypeError(
