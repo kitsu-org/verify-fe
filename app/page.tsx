@@ -26,7 +26,7 @@ export default function Home() {
                     </CardHeader>
                     <CardContent className="prose prose-gray dark:prose-invert [&_li>strong]:block [&_li>strong]:mb-2">
                         <text>
-                            KitsuVerify is a ID Verification system to verify
+                            KitsuVerify is an ID Verification system to verify
                             suspected minors are not on the platform. Right now,
                             identification cannot be volunteered.
                             <br />
