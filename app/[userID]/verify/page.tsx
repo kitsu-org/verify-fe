@@ -77,6 +77,9 @@ export default function Verify({ params }: { params: { userID: string } }) {
             onMessageType(MessageTypes.VerificationFailed, (data) => {
                 if (data.reason === "underage") {
                     router.push(`/${params.userID}/verify/reject`);
+                } else {
+                    isInVerifySession.current = false;
+                    setStep("stripeCancel");
                 }
             });
             onMessageType(MessageTypes.VerificationComplete, () => {
